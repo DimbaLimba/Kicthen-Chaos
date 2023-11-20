@@ -11,7 +11,7 @@ public class KichenGameManager : MonoBehaviour
     public event EventHandler OnGamePaused;
     public event EventHandler OnGameUnPaused;
 
-    private enum Static
+    private enum State
     {
         WaitingToStart,
         CountDownToStart,
@@ -19,8 +19,7 @@ public class KichenGameManager : MonoBehaviour
         GameOver
     }
 
-    private Static _static;
-    private float _waitingToStartTimer = 1f;
+    private State _state;
     private float _countDownToStartTimer = 3f;
     private float _gamePlayigTimer;
     private float _gamePlayigTimerMax = 100f;
@@ -29,12 +28,22 @@ public class KichenGameManager : MonoBehaviour
     private void Awake()
     {
         Instance = this;
-        _static = Static.WaitingToStart;
+        _state = State.WaitingToStart;
     }
 
     private void Start()
     {
         GameInput.Instance.OnPauseActive += GameInput_OnPauseActive;
+        GameInput.Instance.OnInteractActive += GameInput_OnInteractActive;
+    }
+
+    private void GameInput_OnInteractActive(object sender, EventArgs e)
+    {
+        if (_state == State.WaitingToStart)
+        {
+            _state = State.CountDownToStart;
+            OnStateChanged?.Invoke(this, new EventArgs()); 
+        }
     }
 
     private void GameInput_OnPauseActive(object sender, EventArgs e)
@@ -44,34 +53,26 @@ public class KichenGameManager : MonoBehaviour
 
     private void Update()
     {
-        switch (_static)
+        switch (_state)
         {
-            case Static.WaitingToStart:
-                _waitingToStartTimer -= Time.deltaTime;
-                if (_waitingToStartTimer < 0f)
-                {
-                    _static = Static.CountDownToStart;
-                    OnStateChanged?.Invoke(this, EventArgs.Empty);
-                }
-                break;
-            case Static.CountDownToStart:
+            case State.CountDownToStart:
                 _countDownToStartTimer -= Time.deltaTime;
                 if (_countDownToStartTimer < 0f)
                 {
-                    _static = Static.GamePlaying;
+                    _state = State.GamePlaying;
                     _gamePlayigTimer = _gamePlayigTimerMax;
                     OnStateChanged?.Invoke(this, EventArgs.Empty);
                 }
                 break;
-            case Static.GamePlaying:
+            case State.GamePlaying:
                 _gamePlayigTimer -= Time.deltaTime;
                 if (_gamePlayigTimer < 0f)
                 {
-                    _static = Static.GameOver;
+                    _state = State.GameOver;
                     OnStateChanged?.Invoke(this, EventArgs.Empty);
                 }
                 break;
-            case Static.GameOver:
+            case State.GameOver:
                 break;
         }
     }
@@ -95,12 +96,12 @@ public class KichenGameManager : MonoBehaviour
 
     public bool IsGamePlaying()
     {
-        return _static == Static.GamePlaying;
+        return _state == State.GamePlaying;
     }
 
     public bool IsCountdownToStartActive()
     {
-        return _static == Static.CountDownToStart;
+        return _state == State.CountDownToStart;
     }
 
     public float GetCountdownToStartTimer()
@@ -110,7 +111,7 @@ public class KichenGameManager : MonoBehaviour
 
     public bool IsGameOver()
     {
-        return _static == Static.GameOver;
+        return _state == State.GameOver;
     }
 
     public float GetGamePlayigTimerNormalize()
