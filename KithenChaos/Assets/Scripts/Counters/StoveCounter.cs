@@ -41,11 +41,11 @@ public class StoveCounter : BaseCounter, IHasProgress
         {
             switch (_state)
             {
-            case State.Idle:
+                case State.Idle:
 
-                break;
-            case State.Frying:
-                _fryingTimer += Time.deltaTime;
+                    break;
+                case State.Frying:
+                    _fryingTimer += Time.deltaTime;
 
                     OnProgressChanged?.Invoke(this, new IHasProgress.OnProgressChangedEventArgs
                     {
@@ -53,12 +53,12 @@ public class StoveCounter : BaseCounter, IHasProgress
                     });
 
                     if (_fryingTimer > _flyingRecipeSO.timerFlyingMax)
-                {
+                    {
                         _fryingTimer = 0f;
 
-                    GetKichenObject().DestroySelf();
+                        GetKichenObject().DestroySelf();
 
-                    KichenObject.SpawnKichenObject(_flyingRecipeSO.output, this);
+                        KichenObject.SpawnKichenObject(_flyingRecipeSO.output, this);
 
                         _state = State.Fried;
                         _burnedTimer = 0f;
@@ -69,8 +69,8 @@ public class StoveCounter : BaseCounter, IHasProgress
                             state = _state
                         });
                     }
-                break;
-            case State.Fried:
+                    break;
+                case State.Fried:
                     _burnedTimer += Time.deltaTime;
 
                     OnProgressChanged?.Invoke(this, new IHasProgress.OnProgressChangedEventArgs
@@ -92,7 +92,7 @@ public class StoveCounter : BaseCounter, IHasProgress
                         });
                     }
                     break;
-            case State.Burned:
+                case State.Burned:
                     OnProgressChanged?.Invoke(this, new IHasProgress.OnProgressChangedEventArgs
                     {
                         progressNormalized = 0f
@@ -100,7 +100,7 @@ public class StoveCounter : BaseCounter, IHasProgress
                     break;
 
 
-            } 
+            }
         }
     }
 
@@ -222,5 +222,10 @@ public class StoveCounter : BaseCounter, IHasProgress
             }
         }
         return null;
+    }
+
+    public bool IsFried()
+    {
+        return _state == State.Fried;
     }
 }
