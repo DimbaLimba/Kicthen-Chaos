@@ -22,7 +22,7 @@ public class KichenGameManager : MonoBehaviour
     private State _state;
     private float _countDownToStartTimer = 3f;
     private float _gamePlayigTimer;
-    private float _gamePlayigTimerMax = 100f;
+    private float _gamePlayigTimerMax = 60f;
     private bool _isGamePaused = false;
 
     private void Awake()

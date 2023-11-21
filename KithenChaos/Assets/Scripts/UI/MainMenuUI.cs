@@ -13,7 +13,7 @@ public class MainMenuUI : MonoBehaviour
             Loader.Load(Loader.Scene.GameScene);
         });
 
-        _playButton.onClick.AddListener(() =>
+        _quitButton.onClick.AddListener(() =>
         {
             Application.Quit();
         });

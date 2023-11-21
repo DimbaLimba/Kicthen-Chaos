@@ -15,9 +15,9 @@ public class DeliveryManager : MonoBehaviour
     [SerializeField] private RecipeListSO _recipeListSO;
 
     private List<RecipeSO> _waitingRecipeSOList;
-    private float _spawnRecipeTime;
-    private float _spawnRecipeTimeMax = 4f;
-    private int _spawnRecipesMax = 4;
+    private float _spawnRecipeTime = 0;
+    private float _spawnRecipeTimeMax = 3f;
+    private int _spawnRecipesMax = 5;
     private int _sussecfullRecipeAmount;
 
     private void Awake()
@@ -34,7 +34,7 @@ public class DeliveryManager : MonoBehaviour
         {
             _spawnRecipeTime = _spawnRecipeTimeMax;
 
-            if (KichenGameManager.Instance.IsGamePlaying() && _waitingRecipeSOList.Count < _spawnRecipesMax)
+            if (_waitingRecipeSOList.Count < _spawnRecipesMax)
             {
                 RecipeSO waitingRecipeSO = _recipeListSO.recipeSOList[UnityEngine.Random.Range(0, _recipeListSO.recipeSOList.Count)];
 
